@@ -45,18 +45,16 @@ public class ServiceMovie {
             if(input== movie.getId()){
                 System.out.println(movie.getId()+"---"+movie.getTitle()+"---"+movie.getTime()+"---"+movie.getScore()+"---"
                         +movie.getArea()+"---"+movie.getType()+"---"+movie.getDirector()+"---"+movie.getStarring());
-                break;
-            }
-            else{
-                System.out.println("输入错误，请重新输入");
+                return;
             }
         }
+        System.out.println("输入错误，请重新输入");
     }
 
     private void palyMessage() {
         for(int i=0;i<movies.length;i++){
             Movie movie=movies[i];
-            System.out.println(movie.getTitle()+"-----"+movie.getType());
+            System.out.println(movie.getTitle()+"-----"+movie.getId());
         }
     }
 }
