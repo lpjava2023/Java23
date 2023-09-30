@@ -2,6 +2,8 @@ package com.itheima.stonepuzzle;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.Random;
@@ -11,8 +13,15 @@ public class MainFrame extends JFrame implements KeyListener {
 
     int row ;//0号元素行坐标位置
     int column ;//0号元素列坐标位置
+    int count;
 
     int[][] data = {
+            {1,2,3,4},
+            {5,6,7,8},
+            {9,10,11,12},
+            {13,14,15,0}
+    };
+    int[][] win ={
             {1,2,3,4},
             {5,6,7,8},
             {9,10,11,12},
@@ -71,11 +80,11 @@ public class MainFrame extends JFrame implements KeyListener {
                 data[X][Y]=temp;
             }
         }
-        for (int j = 0; j < data.length; j++) {
-            for (int i = 0; i < data[j].length; i++) {
-                if(data[j][i]==0){
-                    row=j;
-                    column=i;
+        for (int i = 0; i < data.length; i++) {
+            for (int j = 0; j < data[i].length; j++) {
+                if(data[i][j]==0){
+                    row=i;
+                    column=j;
                 }
             }
         }
@@ -87,12 +96,15 @@ public class MainFrame extends JFrame implements KeyListener {
  * 判断游戏是否胜利
  * */
     public boolean victory(){
-        int[][] win ={
-                {1,2,3,4},
-                {5,6,7,8},
-                {9,10,11,12},
-                {13,14,15,0}
-        };
+        /*
+        * 将其创建在外面，就不用每一次创建数组
+        * */
+//        int[][] win ={
+//                {1,2,3,4},
+//                {5,6,7,8},
+//                {9,10,11,12},
+//                {13,14,15,0}
+//        };
         for (int j = 0; j < data.length; j++) {
             for (int i = 0; i < data[j].length; i++) {
                 if(data[j][i]!=win[j][i]){
@@ -110,6 +122,34 @@ public class MainFrame extends JFrame implements KeyListener {
 
         //清空
         getContentPane().removeAll();
+
+        if(victory()) {
+            //加载胜利图片，添加到窗体中——若添加到清空前面会被清空
+            JLabel win = new JLabel(new ImageIcon("D:\\Advanced-Codes\\day03-code\\图片\\win.png"));
+            win.setBounds(124,230,260,88);
+            getContentPane().add(win);
+        }
+
+        JLabel text = new JLabel("步数为"+count);
+        text.setBounds(50,20,100,20);
+        getContentPane().add(text);
+
+        JButton btn = new JButton("重新开始");
+        btn.setBounds(350,20,100,20);
+        getContentPane().add(btn);
+        btn.setFocusable(false);
+        btn.addActionListener(e -> {
+            count =0;
+            initData();
+            paintView();
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                count =0;
+//                initData();
+//                paintView();
+//            }
+        });
+
 
         for(int j = 0;j < 4; j++){
             for (int i = 0; i < 4; i++) {
@@ -143,6 +183,9 @@ public class MainFrame extends JFrame implements KeyListener {
      * 此方法用于处理移动业务
      * */
     private void move(int keyCode) {
+        if(victory()){
+            return;
+        }
         if (keyCode == 37) {
             if(column==3){
                 return;
@@ -153,6 +196,7 @@ public class MainFrame extends JFrame implements KeyListener {
             data[row][column]=data[row][column+1];
             data[row][column+1]=temp;
             column++;
+            count++;
         } else if (keyCode == 38) {
             if(row==3){
                 return;
@@ -163,6 +207,7 @@ public class MainFrame extends JFrame implements KeyListener {
             data[row][column]=data[row+1][column];
             data[row+1][column]=temp;
             row++;
+            count++;
         } else if (keyCode == 39) {
             if(column==0){
                 return;
@@ -173,6 +218,7 @@ public class MainFrame extends JFrame implements KeyListener {
             data[row][column]=data[row][column-1];
             data[row][column-1]=temp;
             column--;
+            count++;
         } else if (keyCode == 40) {
             if(row==0){
                 return;
@@ -183,6 +229,7 @@ public class MainFrame extends JFrame implements KeyListener {
             data[row][column]=data[row-1][column];
             data[row-1][column]=temp;
             row--;
+            count++;
         }else if(keyCode == 90){
             //触发作弊器
             data=new int[][]{   //不能用简化格式，只能这样
@@ -191,8 +238,8 @@ public class MainFrame extends JFrame implements KeyListener {
                     {9,10,11,12},
                     {13,14,15,0}
             };
-
         }
+
     }
 
     @Override
